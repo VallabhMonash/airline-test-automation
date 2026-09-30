@@ -1,0 +1,177 @@
+package com.ars.unit;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class TicketTest {
+
+    private static final int PRICE = 100;
+
+    @Mock
+    private Flight mockFlight;
+    @Mock
+    private Passenger mockPassenger;
+    private Ticket ticket;
+
+    @BeforeEach
+    void setUp() {
+        // Creating a Ticket object
+        ticket = new Ticket(1, PRICE, mockFlight, true, mockPassenger);
+    }
+
+    void setAge(int age) {
+        when(mockPassenger.getAge()).thenReturn(age);
+        ticket.setPrice(PRICE);
+    }
+
+    @Test
+    void testSetPriceThrowsExceptionForNegativePrice() {
+        assertThrows(IllegalArgumentException.class, () -> ticket.setPrice(-1));
+    }
+
+    @Test
+    void testSetPriceAcceptsZero() {
+        ticket.setPrice(0);
+        assertEquals(0, ticket.getPrice());
+    }
+
+    // Boundary Value Testing (BVT)
+    @Test
+    void testBoundaryAgeDiscountChild() {
+        // Boundary value for a child age: 15 shouldn't apply a discount (50%)
+        setAge(15);
+        assertEquals(112, ticket.getPrice(), "Price should not be halved for age = 15");
+
+        // Age below 15 should apply the discount
+        setAge(14);
+        assertEquals(56, ticket.getPrice(), "Price should be halved for age < 15");
+
+        // Age above 15 should stop the discount (checking boundary)
+        setAge(16);
+        assertEquals(112, ticket.getPrice(), "Price should not have a discount for adults");
+    }
+
+    @Test
+    void testBoundaryAgeDiscountSenior() {
+        // Boundary value for senior citizens (e.g., age = 60)
+        setAge(60);
+        assertEquals(0, ticket.getPrice(), "Price should be 0 for seniors (age = 60)");
+
+        // Any age above 60 should still apply the free ticket
+        setAge(61);
+        assertEquals(0, ticket.getPrice(), "Price should remain 0 for seniors (age > 60)");
+    }
+
+    // Equivalence Testing (ET)
+    @Test
+    void testSaleByAgeForAdult() {
+        // Age between 18 and 59 is considered adult (equivalence class)
+        setAge(30);
+        assertEquals(112, ticket.getPrice(), "Price should include 12% service tax for adult");
+
+        // Another equivalence class: any other adult
+        setAge(45);
+        assertEquals(112, ticket.getPrice(), "Price should remain the same for an adult with service tax");
+    }
+
+    @Test
+    void testSaleByAgeForChild() {
+        // Age between 0 and 14 is considered a child (equivalence class)
+        setAge(10);
+        assertEquals(56, ticket.getPrice(), "Price should be halved for a child with service tax");
+
+        // Another equivalence class: any other child
+        setAge(5);
+        assertEquals(56, ticket.getPrice(), "Price should be halved for a child with service tax");
+    }
+
+
+    @Test
+    void testTicketStatus() {
+        // Decision table: Checking different ticket status transitions
+        assertFalse(ticket.ticketStatus(), "Ticket should not be booked initially");  // Status = false (not booked)
+
+        ticket.setTicketStatus(true);  // Status = true (booked)
+        assertTrue(ticket.ticketStatus(), "Ticket should be booked after status change");
+    }
+
+    // should throw when flight argument is null
+    @Test
+    void testConstructorThrowsOnNullFlight() {
+        assertThrows(NullPointerException.class, () ->
+                new Ticket(1, PRICE, null, false, mockPassenger)
+        );
+    }
+
+    // setFlight must reject null
+    @Test
+    void testSetFlightNullThrows() {
+        assertThrows(NullPointerException.class, () ->
+                ticket.setFlight(null)
+        );
+    }
+
+    // setPassenger must reject null
+    @Test
+    void testSetPassengerNullThrows() {
+        assertThrows(NullPointerException.class, () ->
+                ticket.setPassenger(null)
+        );
+    }
+
+    // negative price not allowed
+    @Test
+    void testSetPriceNegativeThrows() {
+        assertThrows(IllegalArgumentException.class, () ->
+                ticket.setPrice(-5)
+        );
+    }
+
+    // ticketId getter/setter
+    @Test
+    void testGettersAndSettersWork() {
+        ticket.setTicketId(42);
+        assertEquals(42, ticket.getTicketId());
+
+        // classVip getter/setter
+        ticket.setClassVip(false);
+        assertFalse(ticket.isClassVip());
+        ticket.setClassVip(true);
+        assertTrue(ticket.isClassVip());
+
+        // status getter/setter
+        ticket.setTicketStatus(true);
+        assertTrue(ticket.ticketStatus());
+        ticket.setTicketStatus(false);
+        assertFalse(ticket.ticketStatus());
+
+        // price setter (no exception) and getter returns taxed value
+        ticket.setPrice(200);
+
+        assertEquals(112, ticket.getPrice());
+    }
+
+    // stub toString of flight and passenger
+    @Test
+    void testToStringIncludesAllDetails() {
+        when(mockFlight.toString()).thenReturn("Flight[ID=1]");
+        when(mockPassenger.toString()).thenReturn("Passenger[Alice]");
+        ticket.setTicketStatus(true);
+
+        String str = ticket.toString();
+        assertAll("toString content",
+                () -> assertTrue(str.contains("Price=" + ticket.getPrice())),
+                () -> assertTrue(str.contains("Flight[ID=1]")),
+                () -> assertTrue(str.contains("VIP=" + ticket.isClassVip())),
+                () -> assertTrue(str.contains("Passenger[Alice]")),
+                () -> assertTrue(str.contains("Booked=" + ticket.ticketStatus()))
+        );
+    }
+}
