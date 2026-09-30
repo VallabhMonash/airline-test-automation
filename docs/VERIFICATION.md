@@ -44,4 +44,4 @@ These are snapshots from the successful verification run. Fresh reports are gene
 
 The original source and tests passed before packaging and were preserved. Maven metadata, report formats, PIT plugin dependency placement, and executable quality thresholds were updated. The legacy GitLab configuration was retained unchanged.
 
-The GitHub Actions workflow is prepared and structurally validated locally. No hosted workflow execution or GitHub publication was performed.
+The results above record local verification. The project was subsequently published to GitHub; see [hosted workflow runs](https://github.com/VallabhMonash/airline-test-automation/actions/workflows/quality.yml) for runner results and downloadable artifacts associated with each commit.

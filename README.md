@@ -1,5 +1,7 @@
 # Airline Reservation System — Test Automation Portfolio
 
+[![Tests and quality checks](https://github.com/VallabhMonash/airline-test-automation/actions/workflows/quality.yml/badge.svg)](https://github.com/VallabhMonash/airline-test-automation/actions/workflows/quality.yml)
+
 **Coverage improved from 74% to 96% · 85+ JUnit test cases authored · 95% historical mutation score**
 
 A Java test automation case study by **Vallabh Shelar**, developed with a three-person team for Monash University's FIT5171 project, March–June 2025. The work focused on finding coverage gaps, strengthening assertions, and verifying airline booking behavior through unit and integration tests.
@@ -79,7 +81,7 @@ Open `target/site/jacoco/index.html` for coverage and `target/pit-reports/index.
 
 ## Automation and quality gates
 
-The portfolio includes a [GitHub Actions workflow](.github/workflows/quality.yml) configured for pushes and pull requests, plus a manual trigger. It runs Java 21 tests and PIT in separate jobs and uploads their reports, including when a job fails. The workflow is prepared locally; a hosted run is only established after the repository is pushed.
+The portfolio includes a [GitHub Actions workflow](.github/workflows/quality.yml) configured for pushes and pull requests, plus a manual trigger. It runs Java 21 tests and PIT in separate jobs and uploads their reports, including when a job fails. [View hosted workflow runs and download test, coverage, and mutation reports.](https://github.com/VallabhMonash/airline-test-automation/actions/workflows/quality.yml)
 
 | Check | Minimum |
 | --- | ---: |

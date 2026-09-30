@@ -34,7 +34,7 @@ Both unit and integration classes use names ending in `Test`, so Maven Surefire 
 
 - JaCoCo reports line and branch coverage for all production classes. The build fails below 95% line coverage or 90% branch coverage.
 - PIT applies its `DEFAULTS` mutator group and fails below a 90% mutation score. No production classes are excluded to raise the score.
-- The local GitHub Actions definition has separate regression and mutation jobs, explicit timeouts, read-only repository permissions, and report uploads.
+- The GitHub Actions workflow has separate regression and mutation jobs, explicit timeouts, read-only repository permissions, and report uploads.
 
 The thresholds protect the currently measured baseline. They do not establish that every business rule is correct. Mutable static collections and behavior accepted by the original tests remain design limitations of this academic system.
 
